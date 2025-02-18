@@ -114,19 +114,19 @@ You can merge several folders into one meta_info txt. Here is the example:
 
     Train with **a single GPU**:
     ```bash
-    python realesrgan/train.py -opt options/train_amhdmsrnet_x4plus.yml --auto_resume
+    python amhdmsrgan/train.py -opt options/train_amhdmsrnet_x4plus.yml --auto_resume
     ```
 
 ### Train AMHDM-SRGAN
 
-1. After the training of Real-ESRNet, you now have the file `experiments\pretrained_models\net_d_160000.pth`. If you need to specify the pre-trained path to other files, modify the `pretrain_network_g` value in the option file `train_amhdmsrgan_x4plus.yml`.
+1. After the training of AMHDM-SRNet, you now have the file `experiments\pretrained_models\net_d_160000.pth`. If you need to specify the pre-trained path to other files, modify the `pretrain_network_g` value in the option file `train_amhdmsrgan_x4plus.yml`.
 1. Modify the option file `train_amhdmsrgan_x4plus.yml` accordingly. Most modifications are similar to those listed above.
 1. Before the formal training, you may run in the `--debug` mode to see whether everything is OK. We use four GPUs for training:
 
 
     Train with **a single GPU**:
     ```bash
-    python realesrgan/train.py -opt options/train_amhdmsrgan_x4plus.yml --auto_resume
+    python amhdmsrgan/train.py -opt options/train_amhdmsrgan_x4plus.yml --auto_resume
     ```
 ### Run AMHDM-SRGAN
     ```
