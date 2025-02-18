@@ -1,0 +1,209 @@
+# general settings
+name: train_AMHDMSRGANx4plus_400k_B12G4
+model_type: AMHDMSRGANModel
+scale: 4
+num_gpu: auto
+manual_seed: 0
+
+
+
+# 为不同的损失函数对真实图像进行USM（未锐化掩模）处理
+l1_gt_usm: True  # L1损失的真实图像USM
+percep_gt_usm: True  # 感知损失的真实图像USM
+gan_gt_usm: False  # GAN损失的真实图像不使用USM
+
+# 第一个降级过程
+resize_prob: [0.2, 0.7, 0.1]  # 放大、缩小、保持的概率
+resize_range: [0.15, 1.5]  # 缩放范围
+gaussian_noise_prob: 0.5  # 高斯噪声的概率
+noise_range: [1, 30]  # 噪声强度范围
+poisson_scale_range: [0.05, 3]  # 泊松噪声的尺度范围
+gray_noise_prob: 0.4  # 灰度噪声的概率
+jpeg_range: [30, 95]  # JPEG压缩质量范围
+
+# 第一个降级过程的失真设置
+distortion_prob_1: 1  # 应用失真的概率
+distortion_type_1: ['perspective', 'affine']  # 要应用的失真类型
+distortion_magnitude_range_1: [0.1, 0.3]  # 失真的幅度范围
+
+# 第一个降级过程的亮度变化设置
+brightness_change_prob_1: 1  # 应用亮度变化的概率
+brightness_scale_range_1: [0.5, 1.5]  # 亮度缩放范围
+
+# 第一个降级过程的旋转设置
+rotation_prob_1: 1  # 应用旋转的概率
+rotation_angle_range_1: [-30, 30]  # 旋转角度范围（度）
+
+# 第二个降级过程
+second_blur_prob: 0.5  # 应用模糊的概率
+resize_prob2: [0.3, 0.4, 0.3]  # 放大、缩小、保持的概率（第二个过程）
+resize_range2: [0.3, 1.2]  # 缩放范围（第二个过程）
+gaussian_noise_prob2: 0.5  # 高斯噪声的概率（第二个过程）
+noise_range2: [1, 25]  # 噪声强度范围（第二个过程）
+poisson_scale_range2: [0.05, 2.5]  # 泊松噪声的尺度范围（第二个过程）
+gray_noise_prob2: 0.4  # 灰度噪声的概率（第二个过程）
+jpeg_range2: [30, 95]  # JPEG压缩质量范围（第二个过程）
+
+# 可选的第二个降级过程的失真、亮度变化和旋转设置
+# 如果您想将这些增强应用于第二个过程，请取消以下行的注释
+distortion_prob_2: 0.3  # 应用失真的概率（第二个过程）
+distortion_type_2: ['perspective', 'affine']  # 要应用的失真类型（第二个过程）
+distortion_magnitude_range_2: [0.1, 0.3]  # 失真的幅度范围（第二个过程）
+brightness_change_prob_2: 0.6  # 应用亮度变化的概率（第二个过程）
+brightness_scale_range_2: [0.5, 1.5]  # 亮度缩放范围（第二个过程）
+rotation_prob_2: 0.5  # 应用旋转的概率（第二个过程）
+rotation_angle_range_2: [-30, 30]  # 旋转角度范围（度）（第二个过程）
+
+gt_size: 256  # 真实图像大小
+queue_size: 180  # 队列大小
+
+# dataset and data loader settings
+datasets:
+  train:
+    name: DIV2K
+    type: AMHDMSRGANDataset
+    dataroot_gt: datasets/DIV2K_train_HR
+    meta_info: datasets/meta_info/meta_info_DIV2K_train_HR_sub.txt
+    io_backend:
+      type: disk
+
+    blur_kernel_size: 21
+    kernel_list: ['iso', 'aniso', 'generalized_iso', 'generalized_aniso', 'plateau_iso', 'plateau_aniso']
+    kernel_prob: [0.45, 0.25, 0.12, 0.03, 0.12, 0.03]
+    sinc_prob: 0.1
+    blur_sigma: [0.2, 3]
+    betag_range: [0.5, 4]
+    betap_range: [1, 2]
+
+    blur_kernel_size2: 21
+    kernel_list2: ['iso', 'aniso', 'generalized_iso', 'generalized_aniso', 'plateau_iso', 'plateau_aniso']
+    kernel_prob2: [0.45, 0.25, 0.12, 0.03, 0.12, 0.03]
+    sinc_prob2: 0.1
+    blur_sigma2: [0.2, 1.5]
+    betag_range2: [0.5, 4]
+    betap_range2: [1, 2]
+
+    final_sinc_prob: 0.8
+
+    gt_size: 256
+    use_hflip: True
+    use_rot: False
+
+    # data loader
+    use_shuffle: true
+    num_worker_per_gpu: 5
+    batch_size_per_gpu: 12
+    dataset_enlarge_ratio: 1
+    prefetch_mode: ~
+
+  # Uncomment these for validation
+  # val:
+  #   name: validation
+  #   type: PairedImageDataset
+  #   dataroot_gt: path_to_gt
+  #   dataroot_lq: path_to_lq
+  #   io_backend:
+  #     type: disk
+
+# network structures
+network_g:
+  type: RRDBNet
+  num_in_ch: 3
+  num_out_ch: 3
+  num_feat: 64
+  num_block: 23
+  num_grow_ch: 32
+
+network_d:
+  type: UNetDiscriminatorSN
+  num_in_ch: 3
+  num_feat: 64
+  skip_connection: True
+
+# path
+path:
+  # use the pre-trained Real-ESRNet model
+  pretrain_network_g: experiments/pretrained_models/net_g_380000.pth.pth
+  param_key_g: params_ema
+  strict_load_g: true
+  resume_state: ~
+
+# training settings
+train:
+  ema_decay: 0.999
+  optim_g:
+    type: Adam
+    lr: !!float 1e-4
+    weight_decay: 0
+    betas: [0.9, 0.99]
+  optim_d:
+    type: Adam
+    lr: !!float 1e-4
+    weight_decay: 0
+    betas: [0.9, 0.99]
+
+  scheduler:
+    type: MultiStepLR
+    milestones: [400000]
+    gamma: 0.5
+
+  total_iter: 400000
+  warmup_iter: -1  # no warm up
+
+  # losses
+  pixel_opt:
+    type: L1Loss
+    loss_weight: 1.0
+    reduction: mean
+  # perceptual loss (content and style losses)
+  perceptual_opt:
+    type: PerceptualLoss
+    layer_weights:
+      # before relu
+      'conv1_2': 0.1
+      'conv2_2': 0.1
+      'conv3_4': 1
+      'conv4_4': 1
+      'conv5_4': 1
+    vgg_type: vgg19
+    use_input_norm: true
+    perceptual_weight: !!float 1.0
+    style_weight: 0
+    range_norm: false
+    criterion: l1
+  # gan loss
+  gan_opt:
+    type: GANLoss
+    gan_type: vanilla
+    real_label_val: 1.0
+    fake_label_val: 0.0
+    loss_weight: !!float 1e-1
+
+  net_d_iters: 1
+  net_d_init_iters: 0
+
+# Uncomment these for validation
+# validation settings
+# val:
+#   val_freq: !!float 5e3
+#   save_img: True
+
+#   metrics:
+#     psnr: # metric name
+#       type: calculate_psnr
+#       crop_border: 4
+#       test_y_channel: false
+
+# logging settings
+logger:
+  print_freq: 100
+  save_checkpoint_freq: !!float 5e3
+  use_tb_logger: true
+  wandb:
+    project: ~
+    resume_id: ~
+
+# dist training settings
+dist_params:
+  backend: nccl
+  port: 29500

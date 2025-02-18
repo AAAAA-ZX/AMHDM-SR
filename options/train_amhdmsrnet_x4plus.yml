@@ -1,0 +1,165 @@
+# general settings
+name: train_AMHDMSRNetx4_1000k_B12G4
+model_type: AMHDMSRNetModel
+scale: 4
+num_gpu: auto
+manual_seed: 0
+
+gt_usm: True  # 对真实图像进行USM（Unsharp Masking，锐化蒙版）处理
+
+# 第一个降级过程
+resize_prob: [0.2, 0.7, 0.1]  # 放大、缩小、保持原尺寸的概率
+resize_range: [0.15, 1.5]  # 缩放比例的范围
+gaussian_noise_prob: 0.5  # 添加高斯噪声的概率
+noise_range: [1, 30]  # 噪声强度的范围
+poisson_scale_range: [0.05, 3]  # 泊松噪声的尺度范围
+gray_noise_prob: 0.4  # 添加灰度噪声的概率
+jpeg_range: [30, 95]  # JPEG压缩质量因子的范围
+
+# 失真设置（例如，几何失真）
+distortion_prob: 0.3  # 应用失真的概率
+distortion_type: ['透视', '仿射']  # 要应用的失真类型（可以是列表）
+distortion_magnitude_range: [0.1, 0.3]  # 失真的幅度范围
+
+# 亮度变化设置
+brightness_change_prob: 0.6  # 应用亮度变化的概率
+brightness_scale_range: [0.5, 1.5]  # 亮度缩放的范围
+
+# 旋转设置
+rotation_prob: 0.5  # 应用旋转的概率
+rotation_angle_range: [-30, 30]  # 旋转角度的范围（以度为单位）
+
+# 第二个降级过程
+second_blur_prob: 0.5  # 应用模糊的概率
+resize_prob2: [0.3, 0.4, 0.3]  # 放大、缩小、保持原尺寸的概率（第二个过程）
+resize_range2: [0.3, 1.2]  # 缩放比例的范围（第二个过程）
+gaussian_noise_prob2: 0.5  # 添加高斯噪声的概率（第二个过程）
+noise_range2: [1, 25]  # 噪声强度的范围（第二个过程）
+poisson_scale_range2: [0.05, 2.5]  # 泊松噪声的尺度范围（第二个过程）
+gray_noise_prob2: 0.4  # 添加灰度噪声的概率（第二个过程）
+jpeg_range2: [30, 95]  # JPEG压缩质量因子的范围（第二个过程）
+
+# 可选：您也可以将失真、亮度变化和旋转应用到第二个降级过程中
+second_distortion_prob: 0.3  # 如果需要，请取消注释
+second_distortion_type: ['透视', '仿射']  # 如果需要，请取消注释
+second_distortion_magnitude_range: [0.1, 0.3]  # 如果需要，请取消注释
+second_brightness_change_prob: 0.6  # 如果需要，请取消注释
+second_brightness_scale_range: [0.5, 1.5]  # 如果需要，请取消注释
+second_rotation_prob: 0.5  # 如果需要，请取消注释
+second_rotation_angle_range: [-30, 30]  # 如果需要，请取消注释
+
+gt_size: 256  # 真实图像的大小
+queue_size: 180  # 数据队列的大小
+
+# dataset and data loader settings
+datasets:
+  train:
+    name: DIV2K
+    type: Dataset
+    dataroot_gt: datasets/DIV2K_train_HR
+    meta_info: datasets/meta_info/meta_info_DIV2K_train_HR_sub.txt
+    io_backend:
+      type: disk
+
+    blur_kernel_size: 21
+    kernel_list: ['iso', 'aniso', 'generalized_iso', 'generalized_aniso', 'plateau_iso', 'plateau_aniso']
+    kernel_prob: [0.45, 0.25, 0.12, 0.03, 0.12, 0.03]
+    sinc_prob: 0.1
+    blur_sigma: [0.2, 3]
+    betag_range: [0.5, 4]
+    betap_range: [1, 2]
+
+    blur_kernel_size2: 21
+    kernel_list2: ['iso', 'aniso', 'generalized_iso', 'generalized_aniso', 'plateau_iso', 'plateau_aniso']
+    kernel_prob2: [0.45, 0.25, 0.12, 0.03, 0.12, 0.03]
+    sinc_prob2: 0.1
+    blur_sigma2: [0.2, 1.5]
+    betag_range2: [0.5, 4]
+    betap_range2: [1, 2]
+
+    final_sinc_prob: 0.8
+
+    gt_size: 256
+    use_hflip: True
+    use_rot: False
+
+    # data loader
+    use_shuffle: true
+    num_worker_per_gpu: 5
+    batch_size_per_gpu: 12
+    dataset_enlarge_ratio: 1
+    prefetch_mode: ~
+
+  # Uncomment these for validation
+  # val:
+  #   name: validation
+  #   type: PairedImageDataset
+  #   dataroot_gt: path_to_gt
+  #   dataroot_lq: path_to_lq
+  #   io_backend:
+  #     type: disk
+
+# network structures
+network_g:
+  type: RRDBNet
+  num_in_ch: 3
+  num_out_ch: 3
+  num_feat: 64
+  num_block: 23
+  num_grow_ch: 32
+
+# path
+path:
+  pretrain_network_g: experiments/pretrained_models/ESRGAN_SRx4.pth
+  param_key_g: params_ema
+  strict_load_g: true
+  resume_state: ~
+
+# training settings
+train:
+  ema_decay: 0.999
+  optim_g:
+    type: Adam
+    lr: !!float 2e-4
+    weight_decay: 0
+    betas: [0.9, 0.99]
+
+  scheduler:
+    type: MultiStepLR
+    milestones: [1000000]
+    gamma: 0.5
+
+  total_iter: 1000000
+  warmup_iter: -1  # no warm up
+
+  # losses
+  pixel_opt:
+    type: L1Loss
+    loss_weight: 1.0
+    reduction: mean
+
+# Uncomment these for validation
+# validation settings
+# val:
+#   val_freq: !!float 5e3
+#   save_img: True
+
+#   metrics:
+#     psnr: # metric name
+#       type: calculate_psnr
+#       crop_border: 4
+#       test_y_channel: false
+
+# logging settings
+logger:
+  print_freq: 100
+  save_checkpoint_freq: !!float 5e3
+  use_tb_logger: true
+  wandb:
+    project: ~
+    resume_id: ~
+
+# dist training settings
+dist_params:
+  backend: nccl
+  port: 29500
