@@ -1,2 +1,131 @@
 # AMHDM-SRGAN
+ How to Train/Finetune AMHDM-SRGAN
+
+- [Train AMHDM-SRGAN](#train-amhdm-srgan)
+  - [Overview](#overview)
+  - [Dataset Preparation](#dataset-preparation)
+  - [Train AMHDM-SRNet](#Train-AMHDM-SRNet)
+  - [Train AMHDM-SRGAN](#Train-AMHDM-SRGAN)
+
+
+
+## Train AMHDM-SRGAN
+
+### Overview
+
+The training has been divided into two stages. These two stages have the same data synthesis process and training pipeline, except for the loss functions. Specifically,
+
+1. We first train AMHDM-SRNet with L1 loss from the pre-trained model ESRGAN.
+1. We then use the trained AMHDM-SRNet model as an initialization of the generator, and train the AMHDM-SRGAN with a combination of L1 loss, perceptual loss and GAN loss.
+
+### Dataset Preparation
+
+We use DIV2K  datasets for our training. Only HR images are required. <br>
+You can download from :
+
+1. DIV2K: https://data.vision.ee.ethz.ch/cvl/DIV2K/
+
+
+Here are steps for data preparation.
+
+#### Step 1: [Optional] Generate multi-scale images
+
+For the DIV2K dataset, we use a multi-scale strategy, *i.e.*, we downsample HR images to obtain several Ground-Truth images with different scales. <br>
+You can use the [scripts/generate_multiscale.py](scripts/generate_multiscale_DF2K.py) script to generate multi-scale images. <br>
+Note that this step can be omitted if you just want to have a fast try.
+
+```bash
+python scripts/generate_multiscale.py --input datasets/DIV2K_train_HR --output datasets/DIV2K_train_HR_multiscale
+```
+
+#### Step 2: [Optional] Crop to sub-images
+
+We then crop DIV2K images into sub-images for faster IO and processing.<br>
+This step is optional if your IO is enough or your disk space is limited.
+
+You can use the [scripts/extract_subimages.py](scripts/extract_subimages.py) script. Here is the example:
+
+```bash
+ python scripts/extract_subimages.py --input datasets/DIV2K_train_HR_multiscale --output datasets/DIV2K_train_HR_multiscale_sub --crop_size 400 --step 200
+```
+
+#### Step 3: Prepare a txt for meta information
+
+You need to prepare a txt file containing the image paths. The following are some examples in `meta_info_DIV2K_train_HR_multiscale_sub.txt` (As different users may have different sub-images partitions, this file is not suitable for your purpose and you need to prepare your own txt file):
+
+```txt
+DIV2K_train_HR_multiscale_sub/000001_s001.png
+DF2K_HR_sub/000001_s002.png
+DF2K_HR_sub/000001_s003.png
+...
+```
+
+You can use the [scripts/generate_meta_info.py](scripts/generate_meta_info.py) script to generate the txt file. <br>
+You can merge several folders into one meta_info txt. Here is the example:
+
+```bash
+ python scripts/generate_meta_info.py --input datasets/DIV2K_train_HR datasets/DIV2K_train_HR_multiscale --root datasets/DIV2K_train_HR datasets/DIV2K_train_HR --meta_info datasets/DIV2K_train_HR/meta_info/meta_info_DIV2K_train_HRmultiscale.txt
+```
+
+### Train AMHDM-SRNet
+
+
+1. Modify the content in the option file `options/train_amhdmsrnet_x4plus.yml` accordingly:
+    ```yml
+    train:
+        name: DIV2K
+        type: AMHDMSRGANDataset
+        dataroot_gt: datasets/DIV2K_train_HR  # modify to the root path of your folder
+        meta_info: realesrgan/meta_info/meta_info_DIV2K_train_HR_sub.txt  # modify to your own generate meta info txt
+        pretrain_network_g: experiments/pretrained_models/ESRGAN_SRx4.pth
+        io_backend:
+            type: disk
+    ```
+1. If you want to perform validation during training, uncomment those lines and modify accordingly:
+    ```yml
+      # Uncomment these for validation
+      # val:
+      #   name: validation
+      #   type: PairedImageDataset
+      #   dataroot_gt: path_to_gt
+      #   dataroot_lq: path_to_lq
+      #   io_backend:
+      #     type: disk
+
+    ...
+
+      # Uncomment these for validation
+      # validation settings
+      # val:
+      #   val_freq: !!float 5e3
+      #   save_img: True
+
+      #   metrics:
+      #     psnr: # metric name, can be arbitrary
+      #       type: calculate_psnr
+      #       crop_border: 4
+      #       test_y_channel: false
+    ```
+
  
+
+    Train with **a single GPU**:
+    ```bash
+    python realesrgan/train.py -opt options/train_amhdmsrnet_x4plus.yml --auto_resume
+    ```
+
+### Train AMHDM-SRGAN
+
+1. After the training of Real-ESRNet, you now have the file `experiments\pretrained_models\net_d_160000.pth`. If you need to specify the pre-trained path to other files, modify the `pretrain_network_g` value in the option file `train_amhdmsrgan_x4plus.yml`.
+1. Modify the option file `train_amhdmsrgan_x4plus.yml` accordingly. Most modifications are similar to those listed above.
+1. Before the formal training, you may run in the `--debug` mode to see whether everything is OK. We use four GPUs for training:
+
+
+    Train with **a single GPU**:
+    ```bash
+    python realesrgan/train.py -opt options/train_amhdmsrgan_x4plus.yml --auto_resume
+    ```
+### Run AMHDM-SRGAN
+    ```
+    python amhdmsrgan.py
+    ```
