@@ -69,7 +69,10 @@ You can merge several folders into one meta_info txt. Here is the example:
 
 ### Train AMHDM-SRNet
 
-
+1. Download pre-trained model [ESRGAN](https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.1/ESRGAN_SRx4_DF2KOST_official-ff704c30.pth) into `experiments/pretrained_models`.
+    ```bash
+    wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.1/ESRGAN_SRx4_DF2KOST_official-ff704c30.pth -P experiments/pretrained_models
+    ```
 1. Modify the content in the option file `options/train_amhdmsrnet_x4plus.yml` accordingly:
     ```yml
     train:
