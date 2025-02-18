@@ -79,7 +79,7 @@ You can merge several folders into one meta_info txt. Here is the example:
         name: DIV2K
         type: AMHDMSRGANDataset
         dataroot_gt: datasets/DIV2K_train_HR  # modify to the root path of your folder
-        meta_info: realesrgan/meta_info/meta_info_DIV2K_train_HR_sub.txt  # modify to your own generate meta info txt
+        meta_info: amhdmsrgan/meta_info/meta_info_DIV2K_train_HR_sub.txt  # modify to your own generate meta info txt
         pretrain_network_g: experiments/pretrained_models/ESRGAN_SRx4.pth
         io_backend:
             type: disk
