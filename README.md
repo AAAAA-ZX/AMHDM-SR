@@ -11,6 +11,7 @@ If you have used this code or data in your research, please cite the following p
   journal  = {The Visual Computer},
   year     = {2024},
 }
+Zhang, X., Yi, H., Zhao, M. et al. Hybrid-Order Adaptive and Multi-modal Degradation Model for Enhanced Blind Image Super-resolution. Vis Comput(2024).
 ```
 
 ## How to Train/Finetune AMHDM-SRGAN
