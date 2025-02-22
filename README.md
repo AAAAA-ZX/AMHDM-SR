@@ -2,7 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/934706872.svg)](https://doi.org/10.5281/zenodo.14908776)
 This code corresponds to the paper "Hybrid-Order Adaptive and Multi-modal Degradation Model for Enhanced Blind Image Super-resolution", published in The Visual Computer
-## 引用本文 (Citation)
+## Citation
 If you have used this code or data in your research, please cite the following papers:
 ```bibtex
 @article{
@@ -11,9 +11,9 @@ If you have used this code or data in your research, please cite the following p
   journal  = {The Visual Computer},
   year     = {2024},
 }
+```
 
-
- How to Train/Finetune AMHDM-SRGAN
+How to Train/Finetune AMHDM-SRGAN
 
 - [Train AMHDM-SRGAN](#train-amhdm-srgan)
   - [Overview](#overview)
