@@ -147,6 +147,10 @@ You can merge several folders into one meta_info txt. Here is the example:
     python amhdmsrgan/train.py -opt options/train_amhdmsrgan_x4plus.yml --auto_resume
     ```
 ### Run AMHDM-SRGAN
+1. Download pre-trained model [AMHDM-SRGAN](https://zenodo.org/records/14908871) into `experiments/pretrained_models`.
+    ```bash
+    wget https://zenodo.org/records/14908871/net_g_380000.pth -P experiments/pretrained_models
+    ```
     ```
     python amhdmsrgan.py
     ```
