@@ -1,4 +1,13 @@
 # AMHDM-SRGAN
+
+[![DOI](https://zenodo.org/badge/934706872.svg)](https://doi.org/10.5281/zenodo.14908776)
+@article{
+  title={Hybrid-Order Adaptive and Multi-modal Degradation Model for Enhanced Blind Image Super-resolution},
+  author={Zhang, Xin and Yi, Huawei and Zhao, Mengyuan and Wang, Yajun and Lan, Jie},
+  journal="The Visual Computer",
+  year={2025},
+  doi={xxx}
+}
  How to Train/Finetune AMHDM-SRGAN
 
 - [Train AMHDM-SRGAN](#train-amhdm-srgan)
@@ -8,6 +17,9 @@
   - [Train AMHDM-SRGAN](#Train-AMHDM-SRGAN)
 
 
+## Environmental dependencies
+- Python 3.8+ / PyTorch 1.9+ / CUDA 11.1
+ Install commands:'pip install -r requirements.txt'
 
 ## Train AMHDM-SRGAN
 
