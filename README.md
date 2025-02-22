@@ -13,7 +13,7 @@ If you have used this code or data in your research, please cite the following p
 }
 ```
 
-How to Train/Finetune AMHDM-SRGAN
+## How to Train/Finetune AMHDM-SRGAN
 
 - [Train AMHDM-SRGAN](#train-amhdm-srgan)
   - [Overview](#overview)
@@ -22,20 +22,20 @@ How to Train/Finetune AMHDM-SRGAN
   - [Train AMHDM-SRGAN](#Train-AMHDM-SRGAN)
 
 
-## Environmental dependencies
+### Environmental dependencies
 - Python 3.8+ / PyTorch 1.9+ / CUDA 11.1
  Install commands:'pip install -r requirements.txt'
 
-## Train AMHDM-SRGAN
+### Train AMHDM-SRGAN
 
-### Overview
+#### Overview
 
 The training has been divided into two stages. These two stages have the same data synthesis process and training pipeline, except for the loss functions. Specifically,
 
 1. We first train AMHDM-SRNet with L1 loss from the pre-trained model ESRGAN.
 1. We then use the trained AMHDM-SRNet model as an initialization of the generator, and train the AMHDM-SRGAN with a combination of L1 loss, perceptual loss and GAN loss.
 
-### Dataset Preparation
+#### Dataset Preparation
 
 We use DIV2K  datasets for our training. Only HR images are required. <br>
 You can download from :
