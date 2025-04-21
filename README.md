@@ -42,7 +42,7 @@ We use DIV2K  datasets for our training. Only HR images are required. <br>
 You can download from :
 
 1. DIV2K: https://data.vision.ee.ethz.ch/cvl/DIV2K/
-
+2. Flickr2K: https://cv.snu.ac.kr/research/EDSR/Flickr2K.tar
 
 Here are steps for data preparation.
 
@@ -53,18 +53,18 @@ You can use the [scripts/generate_multiscale.py](scripts/generate_multiscale_DF2
 Note that this step can be omitted if you just want to have a fast try.
 
 ```bash
-python scripts/generate_multiscale.py --input datasets/DIV2K_train_HR --output datasets/DIV2K_train_HR_multiscale
+python scripts/generate_multiscale.py --input datasets/DF2K_train_HR --output datasets/DF2K_train_HR_multiscale
 ```
 
 #### Step 2: [Optional] Crop to sub-images
 
-We then crop DIV2K images into sub-images for faster IO and processing.<br>
+We then crop DF2K images into sub-images for faster IO and processing.<br>
 This step is optional if your IO is enough or your disk space is limited.
 
 You can use the [scripts/extract_subimages.py](scripts/extract_subimages.py) script. Here is the example:
 
 ```bash
- python scripts/extract_subimages.py --input datasets/DIV2K_train_HR_multiscale --output datasets/DIV2K_train_HR_multiscale_sub --crop_size 400 --step 200
+ python scripts/extract_subimages.py --input datasets/DF2K_train_HR_multiscale --output datasets/DF2K_train_HR_multiscale_sub --crop_size 400 --step 200
 ```
 
 #### Step 3: Prepare a txt for meta information
@@ -72,7 +72,7 @@ You can use the [scripts/extract_subimages.py](scripts/extract_subimages.py) scr
 You need to prepare a txt file containing the image paths. The following are some examples in `meta_info_DIV2K_train_HR_multiscale_sub.txt` (As different users may have different sub-images partitions, this file is not suitable for your purpose and you need to prepare your own txt file):
 
 ```txt
-DIV2K_train_HR_multiscale_sub/000001_s001.png
+DF2K_train_HR_multiscale_sub/000001_s001.png
 DF2K_HR_sub/000001_s002.png
 DF2K_HR_sub/000001_s003.png
 ...
@@ -94,10 +94,10 @@ You can merge several folders into one meta_info txt. Here is the example:
 1. Modify the content in the option file `options/train_amhdmsrnet_x4plus.yml` accordingly:
     ```yml
     train:
-        name: DIV2K
+        name: DF2K
         type: AMHDMSRGANDataset
-        dataroot_gt: datasets/DIV2K_train_HR  # modify to the root path of your folder
-        meta_info: amhdmsrgan/meta_info/meta_info_DIV2K_train_HR_sub.txt  # modify to your own generate meta info txt
+        dataroot_gt: datasets/DF2K_train_HR  # modify to the root path of your folder
+        meta_info: amhdmsrgan/meta_info/meta_info_DF2K_train_HR_sub.txt  # modify to your own generate meta info txt
         pretrain_network_g: experiments/pretrained_models/ESRGAN_SRx4.pth
         io_backend:
             type: disk
