@@ -69,7 +69,7 @@ You can use the [scripts/extract_subimages.py](scripts/extract_subimages.py) scr
 
 #### Step 3: Prepare a txt for meta information
 
-You need to prepare a txt file containing the image paths. The following are some examples in `meta_info_DIV2K_train_HR_multiscale_sub.txt` (As different users may have different sub-images partitions, this file is not suitable for your purpose and you need to prepare your own txt file):
+You need to prepare a txt file containing the image paths. The following are some examples in `meta_info_DF2K_train_HR_multiscale_sub.txt` (As different users may have different sub-images partitions, this file is not suitable for your purpose and you need to prepare your own txt file):
 
 ```txt
 DF2K_train_HR_multiscale_sub/000001_s001.png
