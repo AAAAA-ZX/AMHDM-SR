@@ -42,13 +42,21 @@ We use DIV2K  datasets for our training. Only HR images are required. <br>
 You can download from :
 
 DIV2K: https://data.vision.ee.ethz.ch/cvl/DIV2K/
+
 Flickr2K: https://cv.snu.ac.kr/research/EDSR/Flickr2K.tar
+
 3Set5: https://github.com/jbhuang0604/SelfExSR
+
 Set14: https://github.com/jbhuang0604/SelfExSR
+
 BSD100: https://github.com/jbhuang0604/SelfExSR
+
 Urban100: https://github.com/jbhuang0604/SelfExSR
+
 RealSR:https://drive.google.com/file/d/1gKnm9BdgyqISCTDAbGbpVitT-QII_unw/view?usp=drive_open
+
 DRealSR:https://drive.google.com/drive/folders/1tP5m4k1_shFT6Dcw31XV8cWHtblGmbOk
+
 Here are steps for data preparation.
 
 #### Step 1: [Optional] Generate multi-scale images
