@@ -6,12 +6,12 @@
 If you have used this code or data in your research, please cite the following papers:
 ```bibtex
 @article{
-  title    = {Hybrid-Order Adaptive and Multi-modal Degradation Model for Enhanced Blind Image Super-resolution},  
-  author   = {Zhang, Xin and Yi, Huawei and Zhao, Mengyuan and Wang, Yajun and Lan, Jie},
-  journal  = {The Visual Computer},
-  year     = {2024},
+  title    = {Hybrid-Order Adaptive and Multi-dimensional Degradation Model for Blind Image Super-resolution},  
+  author   = {Xin Zhang, Huawei Yi, Mengyuan Zhao, Yanfei Wang, Linchen Zhang },
+  journal  = {Signal, Image and Video Processing},
+  year     = {2025},
 }
-Zhang, X., Yi, H., Zhao, M. et al. Hybrid-Order Adaptive and Multi-modal Degradation Model for Enhanced Blind Image Super-resolution. Vis Comput(2024).
+Zhang, X., Yi, H., Zhao, M. et al. Hybrid-Order Adaptive and Multi-dimensional Degradation Model for Blind Image Super-resolution. SIViP (2025).
 ```
 
 ## How to Train/Finetune AMHDM-SRGAN
